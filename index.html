@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>title</title>
+
+    <link href="https://unpkg.com/tabulator-tables@4.1.4/dist/css/tabulator.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.1.4/dist/js/tabulator.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js"></script>
+
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+
+  </head>
+  <body>
+    <div id="example-table"></div>
+  </body>
+
+
+
+  <script>
+  
+  checkboxMutator = function (value, data) {
+        return '<input type="checkbox" class="rowCheckBox" name="' + value + '">';
+}
+  //create Tabulator on DOM element with id "example-table"
+var table = new Tabulator("#example-table", {
+ 	height:500, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+ 	ajaxURL:"json.json", //ajax URL
+    index: "index",
+ 	layout:"fitColumns", //fit columns to width of table (optional)
+ 	columns:[ //Define Table Columns
+        {title:"Check", field: "check", width: 50, headerSort: false, formatter: "html", align: "center", mutator: checkboxMutator },
+        {title:"Index", field:"index", width:150},
+	 	{title:"Name", field:"name", width:150},
+	 	{title:"Last", field:"surname"},
+	 	{title:"Full Name", field:"fullname"},
+	 	{title:"Email", field:"email"},
+ 	],
+     rowFormatter: function (row) {
+        $("input[name='" + row.getData().index + "']:checkbox").prop('checked', row.isSelected());
+
+    }
+});
+
+  
+  </script>
+
+<button id="select-all">Select All</button>
+<button id="deselect-all">De-Select All</button>
+
+
+
+<script>
+
+$("#select-all").click(function () {
+    var rows = table.getRows(true);
+    rows.forEach(function(row){
+            row.select();
+            console.log(row.getData());
+            $("input[name='" + row.getData().index + "']:checkbox").prop('checked', true);
+    });
+});
+
+$("#deselect-all").click(function () {
+    var rows = table.getRows();
+    rows.forEach(function(row){
+            row.deselect();
+            $("input[name='" + row.getData().index + "']:checkbox").prop('checked', false);
+    });
+});
+
+</script>
+
+
+
+
+
+</html>
